@@ -100,6 +100,7 @@ class Position:
             for state in row:
                 print(" %i" % state, end="")
             print()
+        print()
 
     # None -> String
     # Returns a string representing the position.
