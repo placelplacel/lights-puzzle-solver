@@ -1,80 +1,4 @@
-# Cell is a (Natural+{0}, Natural+{0})
-# interp. The coordinates of a cell/light.
-class Cell:
-    # Cell -> Natural+{0}
-    # Returns the x-coordinate of the cell that is fed into it.
-    #   -- TEMPLATE
-    # @property
-    # def x(self):
-    #     pass
-    @property
-    def x(self):
-        return self._x
-
-    # Cell -> Natural+{0}
-    # Returns the y-coordinate of the cell that is fed into it.
-    #   -- TEMPLATE
-    # @property
-    # def y(self):
-    #     pass
-    @property
-    def y(self):
-        return self._y
-
-    # Natural+{0}, Natural+{0} -> Cell
-    # Produces a Cell object representing the cell at the given coordinates, where
-    # the coordinates are of format(x, y) and +y points downwards.
-    #   -- TEMPLATE
-    # def __init__(self, x, y):
-    #     assert isinstance(x, int) and x >= 0, "'x' is not a non-negative integer."
-    #     assert isinstance(y, int) and y >= 0, "'y' is not a non-negative integer."
-    #     pass
-    def __init__(self, x=0, y=0):
-        assert isinstance(x, int) and x >= 0, "'x' is not a non-negative integer."
-        assert isinstance(y, int) and y >= 0, "'y' is not a non-negative integer."
-
-        self._x = x
-        self._y = y
-
-    # Cell, Cell -> boolean
-    # Produces True if the first cell that is fed into it comes after the second
-    # when moving left-to-right top-to-down through any grid.
-    #   -- TEMPLATE
-    # def __gt__(self, other):
-    #     assert isinstance(other, Cell), "'other' is not a Cell."
-    #     pass
-    def __gt__(self, other):
-        assert isinstance(other, Cell), "'other' is not a Cell."
-
-        return self._y > other._y or (self._y == other._y and self._x > other._x)
-
-    # Cell, Cell -> boolean
-    # Produces True if the first cell that is fed into it comes before the second
-    # when moving left-to-right top-to-down through any grid.
-    #   -- TEMPLATE
-    # def __lt__(self, other):
-    #     assert isinstance(other, Cell), "'other' is not a Cell."
-    #     pass
-    def __lt__(self, other):
-        assert isinstance(other, Cell), "'other' is not a Cell."
-
-        return self._y < other._y or (self._y == other._y and self._x < other._x)
-
-    # Cell, Cell -> boolean
-    # Produces True if the first cell that is fed into it is the same as the second.
-    #   -- TEMPLATE
-    # def __eq__(self, other):
-    #     assert isinstance(other, Cell), "'other' is not a Cell."
-    #     pass
-    def __eq__(self, other):
-        assert isinstance(other, Cell), "'other' is not a Cell."
-
-        return self._x == other.x and self._y == other.y
-
-    # Cell -> String
-    # Produces a string representing the move that is fed into it.
-    def __str__(self):
-        return "(%i, %i)" % (self._x, self._y)
+from cell import Cell
 
 
 # Position is a List<boolean>
@@ -100,6 +24,16 @@ class Position:
     @property
     def num_rows(self):
         return self._num_rows
+
+    # Position -> Natural+{0}
+    # Produces the number of cells in the position that is fed into it.
+    #   -- TEMPLATE
+    # @property
+    # def num_cells(self):
+    #    pass
+    @property
+    def num_cells(self):
+        return self._num_rows * self._num_columns
 
     # Position -> List<boolean>
     # Produces a copy of the list of booleans representing the states of the lights of the
@@ -133,7 +67,7 @@ class Position:
         self._position_str = position_str.strip()
 
         if self._position_str == "":
-            self._light_states = [False] * (self._num_rows * self._num_columns)
+            self._light_states = [False] * self.num_cells
             return
 
         row_strs = self._position_str.split("/")
@@ -164,19 +98,19 @@ class Position:
 
         result = self.__copy__()
 
-        def try_toggle_light(x, y):
-            # Assumes that 'x' and 'y' are always integers.
+        def try_toggle_light(target_cell):
+            # Assumes that 'target_cell' is always a Cell.
             try:
-                index = self.index_of(Cell(x, y))
+                index = self.index_of(target_cell)
                 result._light_states[index] = not result._light_states[index]
             except AssertionError:
                 pass
 
-        try_toggle_light(cell.x, cell.y)
-        try_toggle_light(cell.x - 1, cell.y)
-        try_toggle_light(cell.x + 1, cell.y)
-        try_toggle_light(cell.x, cell.y - 1)
-        try_toggle_light(cell.x, cell.y + 1)
+        try_toggle_light(cell)
+        try_toggle_light(cell - Cell(1, 0))
+        try_toggle_light(cell + Cell(1, 0))
+        try_toggle_light(cell - Cell(0, 1))
+        try_toggle_light(cell + Cell(0, 1))
 
         result._position_str = ""
         for i in range(len(result._light_states)):
@@ -212,6 +146,17 @@ class Position:
             if i % self._num_columns == 0:
                 print()
             print(" %i" % self._light_states[i], end="")
+
+    # Position, Position -> boolean
+    # Produces True if the two positions have the same dimensions.
+    #   -- TEMPLATE
+    # def same_size_as(self, other):
+    #     assert isinstance(other, Position), "'other' is not a Position."
+    #     pass
+    def same_size_as(self, other):
+        assert isinstance(other, Position), "'other' is not a Position."
+
+        return self._num_rows == other._num_rows and self._num_columns == other._num_columns
 
     # Position, Position -> boolean
     # Produces True if the light states of the two operand Positions are the same and False

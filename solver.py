@@ -23,8 +23,7 @@ class Solver:
         assert isinstance(current_depth, int) and current_depth >= 0, "'current_depth' is not a non-negative integer."
         assert isinstance(max_depth, int) and max_depth >= 0, "'max_depth' is not a non-negative integer."
 
-        if (not start_position.num_columns == end_position.num_columns
-                or not start_position.num_rows == end_position.num_rows) or current_depth >= max_depth:
+        if not start_position.same_size_as(end_position) or current_depth >= max_depth:
             return ()
 
         if start_position == end_position:
@@ -32,7 +31,7 @@ class Solver:
 
         move_x = past_move.x
         move_y = past_move.y
-        for i in range(start_position.index_of(past_move), start_position.num_rows * start_position.num_columns):
+        for i in range(start_position.index_of(past_move), start_position.num_cells):
             move = Cell(move_x, move_y)
             result = Solver.solve(start_position.make_move(move), end_position, move, past_moves + (move,),
                                   current_depth + 1, max_depth)
