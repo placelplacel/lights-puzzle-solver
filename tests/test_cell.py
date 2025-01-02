@@ -5,10 +5,11 @@ from cell import Cell
 class TestCell(unittest.TestCase):
     def test_gt(self):
         test_cases = [
-            (Cell(0, 0), Cell(0, 0), False),
-            (Cell(1, 0), Cell(2, -1), True),
-            (Cell(3, 2), Cell(4, 2), False),
-            (Cell(-4, -2), Cell(-4, -3), True),
+            (Cell(0, 0), Cell(0, 0),  False),
+            (Cell(0, 0), Cell(0, -1), True),
+            (Cell(0, 0), Cell(0, 1),  False),
+            (Cell(0, 0), Cell(-1, 0), True),
+            (Cell(0, 0), Cell(1, 0),  False),
         ]
 
         for (operand_1, operand_2, actual_output) in test_cases:
@@ -16,10 +17,11 @@ class TestCell(unittest.TestCase):
 
     def test_lt(self):
         test_cases = [
-            (Cell(0, 0), Cell(0, 0), False),
-            (Cell(1, 0), Cell(2, -1), False),
-            (Cell(3, 2), Cell(4, 2), True),
-            (Cell(-4, -2), Cell(-4, -3), False),
+            (Cell(0, 0), Cell(0, 0),  False),
+            (Cell(0, 0), Cell(0, -1), False),
+            (Cell(0, 0), Cell(0, 1),  True),
+            (Cell(0, 0), Cell(-1, 0), False),
+            (Cell(0, 0), Cell(1, 0),  True),
         ]
 
         for (operand_1, operand_2, actual_output) in test_cases:

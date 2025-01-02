@@ -88,13 +88,15 @@ class Position:
     # Position, Cell -> Position
     # Produces the position after making a move from the position that is fed into it, at the
     # coordinates of the provided cell (i.e. the position after toggling the light at that point
-    # along with its neighbors).
+    # along with its neighbors). The cell must be within the position's bounds.
     #   -- TEMPLATE
     # def make_move(self, cell):
     #     assert isinstance(cell, Cell), "'cell' is not a Cell."
+    #     assert cell in self, "'cell' is out of bounds."
     #     pass
     def make_move(self, cell):
         assert isinstance(cell, Cell), "'cell' is not a Cell."
+        assert cell in self, "'cell' is out of bounds."
 
         result = self.__copy__()
 
@@ -169,6 +171,17 @@ class Position:
         assert isinstance(other, Position), "'other' is not a Position."
 
         return self._light_states == other._light_states
+
+    # Position, Cell -> boolean
+    # Produces True if the cell is in the bounds of the position that is fed into it.
+    #   -- TEMPLATE
+    # def __contains__(self, item):
+    #     assert isinstance(item, Cell), "'item' is not a Cell."
+    #     pass
+    def __contains__(self, item):
+        assert isinstance(item, Cell), "'item' is not a Cell."
+
+        return 0 <= item.x < self._num_columns and 0 <= item.y < self._num_rows
 
     # Position -> String
     # Produces a string representing the position that is fed into it.

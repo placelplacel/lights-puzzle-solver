@@ -25,13 +25,14 @@ class TestPosition(unittest.TestCase):
 
     def test_make_move(self):
         test_cases = [
-            (1, 1, "1",           Cell(0, 0), "0"),
-            (2, 2, "10/11",       Cell(1, 0), "01/10"),
-            (2, 3, "101/111",     Cell(2, 1), "100/100"),
-            (3, 3, "101/000/101", Cell(1, 1), "111/111/111")
+            (1, 1, "1",           Cell(0, 0),  "0"),
+            (2, 2, "10/11",       Cell(1, 0),  "01/10"),
+            (3, 3, "101/000/101", Cell(2, 1),  "100/011/100"),
+            (3, 3, "101/000/101", Cell(1, 1),  "111/111/111"),
         ]
 
         for (num_rows, num_columns, position_str, cell, actual_output_str) in test_cases:
+            print(position_str)
             self.assertEqual(Position(num_rows, num_columns, position_str).make_move(cell),
                              Position(num_rows, num_columns, actual_output_str))
 
@@ -56,6 +57,19 @@ class TestPosition(unittest.TestCase):
 
         for (operand_1, operand_2, actual_output) in test_cases:
             self.assertEqual(operand_1.same_size_as(operand_2), actual_output)
+
+    def test_contains(self):
+        test_cases = [
+            (Position(1, 1, "1"), Cell(0, 0), True),
+            # Boundary Cases
+            (Position(2, 3, "101/111"), Cell(3, 1),  False),
+            (Position(2, 3, "101/111"), Cell(2, 2),  False),
+            (Position(2, 3, "101/111"), Cell(0, -1), False),
+            (Position(2, 3, "101/111"), Cell(-1, 0), False),
+        ]
+
+        for (position, cell, actual_output) in test_cases:
+            self.assertEqual(cell in position, actual_output)
 
     def test_copy(self):
         test_cases = [
